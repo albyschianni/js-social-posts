@@ -1,3 +1,15 @@
+
+// Ricreiamo un feed social aggiungendo al layout di base fornito, il nostro script JS in cui:
+// Milestone 1 -
+// Creiamo il nostro array di oggetti che rappresentano ciascun post. Ogni post dovrà avere le informazioni necessarie per stampare la relativa card: - id del post, numero progressivo da 1 a n - nome autore, - foto autore, - data in formato americano (mm-gg-yyyy), - testo del post, - immagine (non tutti i post devono avere una immagine), - numero di likes. Non è necessario creare date casualiPer le immagini va bene utilizzare qualsiasi servizio di placeholder ad es. Unsplash (https://unsplash.it/300/300?image=<id>)
+// Milestone 2 -
+// Prendendo come riferimento il layout di esempio presente nell’html, stampiamo i post del nostro feed.
+// Milestone 3 -
+// Se clicchiamo sul tasto “Mi Piace” cambiamo il colore al testo del bottone e incrementiamo il counter dei likes relativo.
+// Salviamo in un secondo array gli id dei post ai quali abbiamo messo il like.
+
+
+
 const posts = [
     {
         "id": 1,
@@ -55,3 +67,80 @@ const posts = [
         "created": "2021-03-05"
     }
 ];
+
+let container = document.getElementById("container");
+let likeBtn;
+
+posts.forEach((element, index) => {
+
+    container.innerHTML +=`
+
+    <div class="post">
+                <div class="post__header">
+                    <div class="post-meta">                    
+                        <div class="post-meta__icon">
+                            ${element.author.image ? `<img class="profile-pic" src="${element.author.image}" alt="${element.author.name}">`: FirstLetter(element.author.name)}                   
+                        </div>
+                        <div class="post-meta__data">
+                            <div class="post-meta__author">${element.author.name}</div>
+                            <div class="post-meta__time">${element.created}</div>
+                        </div>                    
+                    </div>
+                </div>
+                <div class="post__text">${element.content}</div>
+                <div class="post__image">
+                    <img src="${element.media}" alt="">
+                </div>
+                <div class="post__footer">
+                    <div class="likes js-likes">
+                        <div class="likes__cta">
+                            <a class="like-button  js-like-button" href="#" data-postid="${element.id}">
+                                <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                                <span class="like-button__label">Mi Piace</span>
+                            </a>
+                        </div>
+                        <div class="likes__counter">
+                            Piace a <b id="like-counter${element.id}" class="js-likes-counter">${element.likes}</b> persone
+                        </div>
+                    </div> 
+                </div>            
+            </div>
+`;
+});
+
+let arrayLike = [];
+let arrayLikeCounter = [];
+
+
+likeBtn = document.getElementsByClassName("js-like-button");
+for (let i = 0; i < posts.length; i++) {
+    arrayLikeCounter.push(true);
+
+    likeBtn[i].addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (arrayLikeCounter[i]) {
+        
+            likeBtn[i].classList.add("like-button--liked");
+            document.getElementById(`like-counter${i + 1}`).innerHTML = `${posts[i].likes + 1}`;
+            arrayLike.push(`like-counter${i}`);
+            console.log(arrayLike);
+            arrayLikeCounter[i] = false;
+        } else {
+
+            likeBtn[i].classList.remove("like-button--liked");
+            document.getElementById(`like-counter${i + 1}`).innerHTML = `${posts[i].likes}`;
+            arrayLike.shift(`like-counter${i}`);
+            console.log(arrayLike);
+            arrayLikeCounter[i] = true;
+        }
+    })
+};
+
+
+
+function FirstLetter (name) {
+    let splitName = name.split(" ");
+
+    return `${splitName[0].charAt(0)} ${splitName[1].charAt(0)} `
+}
